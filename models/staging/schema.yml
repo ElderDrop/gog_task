@@ -1,0 +1,117 @@
+models:
+  - name: stg_transactions
+    columns:
+      - name: id
+        tests:
+          - unique
+          - not_null
+      - name: game_id
+        tests:
+          - game_exists
+      - name: currency
+        tests:
+          - accepted_values:
+              arguments:
+                values: ['USD', 'EUR', 'GBP', 'PLN', 'CAD', 'JPY']
+      - name: amount
+        tests:
+          - not_null
+          - not_negative
+      - name: transaction_date
+        tests:
+          - not_null
+          - date_format:
+              arguments:
+                format: '%Y-%m-%d'
+      - name: payment_method
+        tests:
+          - not_null
+      - name: product_type
+        tests:
+          - not_null
+  - name: stg_psp_transactions
+    columns:
+      - name: id
+        tests:
+          - unique
+          - not_null
+      - name: psp_transaction_id
+        tests:
+          - not_null
+      - name: original_transaction_id
+        tests:
+          - not_null
+      - name: psp_amount
+        tests:
+          - not_null
+          - not_negative
+      - name: psp_currency
+        tests:
+          - not_null
+          - accepted_values:
+              arguments:
+                values: ['USD', 'EUR', 'GBP', 'PLN', 'CAD', 'JPY']
+      - name: psp_timestamp
+        tests:
+          - not_null
+          - date_format:
+              arguments:
+                format: '%Y-%m-%d %H:%M:%S'
+      - name: status
+        tests:
+          - not_null
+          - accepted_values:
+              arguments:
+                values: ['CANCELLED', 'FAILED', 'SUCCESS', 'PENDING']
+  - name: stg_game_metadata
+    columns:
+      - name: id
+        tests:
+          - unique
+          - not_null
+      - name: game_id
+        tests:
+          - game_exists
+          - not_null
+          - unique
+      - name: game_title
+        tests:
+          - not_null
+      - name: genre
+        tests:
+          - not_null
+      - name: developer
+        tests:
+          - not_null
+      - name: release_date
+        tests:
+          - not_null
+          - date_format:
+              arguments:
+                format: '%Y-%m-%d'
+  - name: stg_exchange_rates
+    columns:
+      - name: id
+        tests:
+          - unique
+          - not_null
+      - name: currency_from
+        tests:
+          - accepted_values:
+              arguments:
+                values: ['USD', 'EUR', 'GBP', 'PLN', 'CAD', 'JPY']
+      - name: currency_to
+        tests:
+          - accepted_values:
+              arguments:
+                values: ['USD', 'EUR', 'GBP', 'PLN', 'CAD', 'JPY']
+      - name: rate
+        tests:
+          - not_null
+          - not_negative
+      - name: date
+        tests:
+          - not_null
+          - date_format:
+              arguments:
+                format: '%Y-%m-%d'

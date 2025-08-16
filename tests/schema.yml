@@ -1,0 +1,41 @@
+version: 2
+
+data_tests:
+  - name: game_exists
+    description: "Test to check if the game_id is a valid game id"
+    arguments:
+      - name: model
+        type: string
+        description: "The model to test"
+        required: true
+      - name: column_name
+        type: string
+        description: "Column with game_id"
+        required: true
+
+  - name: not_negative
+    description: "Test to check if the value is not negative"
+    arguments:
+      - name: model
+        type: string
+        description: "The model to test"
+        required: true
+      - name: column_name
+        type: string
+        description: "Column with value"
+        required: true
+  - name: date_format
+    description: "Test to check if the value is in the correct format"
+    arguments:
+      - name: model
+        type: string
+        description: "The model to test"
+        required: true
+      - name: column_name
+        type: string
+        description: "Column with date"
+        required: true
+      - name: format
+        type: string
+        description: "Format of the value (e.g. %Y-%m-%d, %Y-%m-%d %H:%M:%S, %Y-%m-%d %H:%M)"
+        required: true

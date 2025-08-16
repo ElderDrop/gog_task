@@ -1,0 +1,29 @@
+
+version: 2
+
+seeds:
+  - name: exchange_rates
+    description: "Exchange rate data"
+    config:
+      +schema: raw
+      +tags: ["raw", "seed"]
+  
+  - name: game_metadata
+    description: "Game metadata"
+    config:
+      +schema: raw
+      +tags: ["raw", "seed"]
+
+  - name: psp_transactions
+    description: "PSP transactions"
+    config:
+      +schema: raw
+      +tags: ["raw", "seed"]
+
+  - name: raw_transactions
+    description: "Raw transactions"
+    config:
+      +schema: raw
+      +tags: ["raw", "seed"]
+  
+  
