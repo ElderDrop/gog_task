@@ -5,7 +5,7 @@
 
 SELECT
     id,
-    game_id,
+    game_id as source_game_id,
     game_title,
     genre,
     developer,

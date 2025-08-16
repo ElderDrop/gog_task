@@ -1,0 +1,39 @@
+models:
+  - name: fact_daily_revenue
+    columns:
+      - name: transaction_date
+        tests:
+          - not_null
+          - date_format:
+              arguments:
+                format: '%Y-%m-%d'
+      - name: product_type
+        tests:
+          - not_null
+      - name: genre
+        tests:
+          - not_null
+      - name: payment_method
+        tests:
+          - not_null
+      - name: daily_revenue
+        tests:
+          - not_null
+          - not_negative
+      - name: currency
+        tests:
+          - not_null
+          - accepted_values:
+              arguments:
+                values: ['PLN']
+
+  - name: dim_games
+    columns:
+      - name: id
+        tests:
+          - not_null
+          - unique
+      - name: game_title
+        tests:
+          - not_null
+      - name: genre
