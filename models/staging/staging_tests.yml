@@ -12,7 +12,7 @@ models:
         tests:
           - accepted_values:
               arguments:
-                values: ['USD', 'EUR', 'GBP', 'PLN', 'CAD', 'JPY']
+                values: ['USD', 'EUR', 'GBP', 'PLN', 'CAD', 'JPY', 'CHF']
       - name: amount
         tests:
           - not_null

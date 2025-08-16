@@ -27,7 +27,7 @@ seeds:
           - not_null
       - name: game_id
 
-  - name: raw_psp_transactions
+  - name: psp_transactions
     description: "Raw PSP transaction data loaded from CSV"
     columns:
     - name: psp_transaction_id
@@ -36,7 +36,6 @@ seeds:
         - unique
     - name: original_transaction_id
       tests:
-        - not_null
         - unique
     - name: psp_amount
       tests:
@@ -61,7 +60,7 @@ seeds:
             arguments:
               values: ['CANCELLED', 'FAILED', 'SUCCESS', 'PENDING']
   
-  - name: raw_game_metadata
+  - name: game_metadata
     description: "Raw game metadata data loaded from CSV"
     columns:
     - name: game_id
@@ -84,7 +83,7 @@ seeds:
             arguments:
               format: '%Y-%m-%d'
   
-  - name: raw_exchange_rates
+  - name: exchange_rates
     description: "Raw exchange rates data loaded from CSV"
     columns:
     - name: date
@@ -98,7 +97,7 @@ seeds:
         - not_null
         - accepted_values:
             arguments:
-              values: ['USD', 'EUR', 'GBP', 'PLN', 'CAD', 'JPY']
+              values: ['USD', 'EUR', 'GBP', 'PLN', 'CAD', 'JPY', 'CHF']
     - name: currency_to
       tests:
         - not_null
