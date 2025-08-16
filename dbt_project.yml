@@ -22,10 +22,14 @@ clean-targets:         # directories to be removed by `dbt clean`
   - "target"
   - "dbt_packages"
 
+seeds:
+  gog_task:
+    +schema: raw
+
 models:
   gog_task:
     staging:
       +schema: staging
-    mart:
+    marts:
       +schema: mart
 

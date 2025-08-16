@@ -5,7 +5,7 @@
     {% else %}
         ({{ amount }} * (
             SELECT rate
-            FROM {{ source('raw', 'exchange_rates') }}
+            FROM {{ ref('exchange_rates') }}
             WHERE currency_from = {{ currency_from }}
             AND date = {{ transaction_date }}
         ))
