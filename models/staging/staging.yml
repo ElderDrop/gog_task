@@ -1,0 +1,149 @@
+models:
+  - name: stg_transactions
+    description: "Staging table for cleaned and normalized raw transaction data. Applies data quality checks, trimming, and type casting to ensure reliable downstream processing."
+    columns:
+      - name: id
+        description: "Surrogate key generated from transaction_id, user_id, and game_id combination"
+        tests:
+          - unique
+          - not_null
+      - name: game_id
+        description: "Filtered game ID (only games starting with 'G' are included)"
+        tests:
+          - game_exists
+      - name: currency
+        description: "Normalized currency code with accepted values for major currencies"
+        tests:
+          - accepted_values:
+              arguments:
+                values: ['USD', 'EUR', 'GBP', 'PLN', 'CAD', 'JPY', 'CHF']
+      - name: amount
+        description: "Transaction amount in original currency, must be positive"
+        tests:
+          - not_null
+          - not_negative
+      - name: transaction_date
+        description: "Transaction date cast to proper date format for analysis"
+        tests:
+          - not_null
+          - date_format:
+              arguments:
+                format: '%Y-%m-%d'
+      - name: payment_method
+        description: "Payment method used for the transaction, normalized from raw data"
+        tests:
+          - not_null
+          - accepted_values:
+              arguments:
+                values: ['Paysafecard', 'GOG Wallet', 'Credit Card', 'Bank Transfer', 'PayPal']
+      - name: product_type
+        description: "Type of product purchased (game, subscription, etc.)"
+        tests:
+          - not_null
+  - name: stg_psp_transactions
+    description: "Staging table for Payment Service Provider transaction data. Links to internal transactions and provides payment processing status information."
+    columns:
+      - name: id
+        description: "Surrogate key generated from psp_transaction_id and original_transaction_id"
+        tests:
+          - unique
+          - not_null
+      - name: psp_transaction_id
+        description: "Unique identifier from the Payment Service Provider"
+        tests:
+          - not_null
+      - name: original_transaction_id
+        description: "Reference to the internal transaction_id for reconciliation"
+        tests:
+          - not_null
+      - name: psp_amount
+        description: "Transaction amount as recorded by the PSP, must be positive"
+        tests:
+          - not_null
+          - not_negative
+      - name: psp_currency
+        description: "Currency used in PSP transaction, normalized to accepted values"
+        tests:
+          - not_null
+          - accepted_values:
+              arguments:
+                values: ['USD', 'EUR', 'GBP', 'PLN', 'CAD', 'JPY']
+      - name: psp_timestamp
+        description: "Timestamp when PSP processed the transaction, cast to proper format"
+        tests:
+          - not_null
+          - date_format:
+              arguments:
+                format: '%Y-%m-%d %H:%M:%S'
+      - name: psp_status
+        description: "Payment processing status from PSP (SUCCESS, FAILED, PENDING, CANCELLED)"
+        tests:
+          - not_null
+          - accepted_values:
+              arguments:
+                values: ['CANCELLED', 'FAILED', 'SUCCESS', 'PENDING']
+  - name: stg_game_metadata
+    description: "Staging table for game information including titles, genres, developers, and release dates. Provides dimensional context for transaction analysis."
+    columns:
+      - name: id
+        description: "Surrogate key for the game metadata record"
+        tests:
+          - unique
+          - not_null
+      - name: game_id
+        description: "Original game identifier, must be unique and valid"
+        tests:
+          - game_exists
+          - not_null
+          - unique
+      - name: game_title
+        description: "Human-readable name of the game"
+        tests:
+          - not_null
+      - name: genre
+        description: "Game category/genre for analytical grouping"
+        tests:
+          - not_null
+      - name: developer
+        description: "Game development studio or company"
+        tests:
+          - not_null
+      - name: release_date
+        description: "Official game release date in YYYY-MM-DD format"
+        tests:
+          - not_null
+          - date_format:
+              arguments:
+                format: '%Y-%m-%d'
+  - name: stg_exchange_rates
+    description: "Staging table for daily currency exchange rates. Enables conversion of multi-currency transactions to PLN for unified financial reporting."
+    columns:
+      - name: id
+        description: "Surrogate key for the exchange rate record"
+        tests:
+          - unique
+          - not_null
+      - name: currency_from
+        description: "Source currency for the exchange rate conversion"
+        tests:
+          - accepted_values:
+              arguments:
+                values: ['USD', 'EUR', 'GBP', 'PLN', 'CAD', 'JPY']
+      - name: currency_to
+        description: "Target currency for the exchange rate conversion"
+        tests:
+          - accepted_values:
+              arguments:
+                values: ['USD', 'EUR', 'GBP', 'PLN', 'CAD', 'JPY']
+      - name: rate
+        description: "Exchange rate value, must be positive for valid conversions"
+        tests:
+          - not_null
+          - not_negative
+      - name: exchange_rate_date
+        description: "Date for which the exchange rate is valid, in YYYY-MM-DD format"
+        tests:
+          - not_null
+          - date_format:
+              arguments:
+                format: '%Y-%m-%d'

@@ -1,0 +1,132 @@
+seeds:
+  - name: raw_transactions
+    description: "Raw transaction data loaded from CSV containing unprocessed transaction records from GOG's internal systems. Includes game sales, subscriptions, and affiliate transactions."
+    columns:
+      - name: transaction_id
+        description: "Unique identifier for each transaction in the system"
+        tests:
+          - not_null
+          - unique
+      - name: transaction_date
+        description: "Date when the transaction occurred, must be in YYYY-MM-DD format"
+        tests:
+          - not_null
+          - date_format:
+              arguments:
+                format: '%Y-%m-%d'
+      - name: amount
+        description: "Transaction amount in original currency, must be positive for valid transactions"
+        tests:
+          - not_null
+          - not_negative
+      - name: currency
+        description: "Original currency of the transaction amount"
+        tests:
+          - not_null
+      - name: payment_method
+        description: "Method used to process the payment (credit card, PayPal, etc.)"
+        tests:
+          - not_null
+      - name: product_type
+        description: "Type of product or service purchased in the transaction"
+        tests:
+          - not_null
+      - name: game_id
+        description: "Identifier linking the transaction to a specific game"
+
+  - name: psp_transactions
+    description: "Raw Payment Service Provider transaction data loaded from CSV. Contains payment processing information directly from external payment processors."
+    columns:
+    - name: psp_transaction_id
+      description: "Unique identifier assigned by the Payment Service Provider"
+      tests:
+        - not_null
+        - unique
+    - name: original_transaction_id
+      description: "Reference to the internal transaction_id for reconciliation purposes"
+      tests:
+        - unique
+    - name: psp_amount
+      description: "Transaction amount as recorded by the PSP, must be positive"
+      tests:
+        - not_null
+        - not_negative
+    - name: psp_currency
+      description: "Currency used in the PSP transaction, limited to major currencies"
+      tests:
+        - not_null
+        - accepted_values:
+            arguments:
+              values: ['USD', 'EUR', 'GBP', 'PLN', 'CAD', 'JPY']
+    - name: psp_timestamp
+      description: "Exact timestamp when PSP processed the transaction, in YYYY-MM-DD HH:MM:SS format"
+      tests:
+        - not_null
+        - date_format:
+            arguments:
+              format: '%Y-%m-%d %H:%M:%S'
+    - name: status
+      description: "Final status of the payment processing (SUCCESS, FAILED, PENDING, CANCELLED)"
+      tests:
+        - not_null
+        - accepted_values:
+            arguments:
+              values: ['CANCELLED', 'FAILED', 'SUCCESS', 'PENDING']
+  
+  - name: game_metadata
+    description: "Raw game metadata data loaded from CSV containing information about games available on the GOG platform. Provides dimensional context for transaction analysis."
+    columns:
+    - name: game_id
+      description: "Unique identifier for each game in the system"
+      tests:
+        - not_null
+        - unique
+    - name: game_title
+      description: "Human-readable name of the game"
+      tests:
+        - not_null
+    - name: genre
+      description: "Game category/genre for analytical grouping and reporting"
+      tests:
+        - not_null
+    - name: developer
+      description: "Game development studio or company responsible for creating the game"
+      tests:
+        - not_null
+    - name: release_date
+      description: "Official game release date, must be in YYYY-MM-DD format"
+      tests:
+        - not_null
+        - date_format:
+            arguments:
+              format: '%Y-%m-%d'
+  
+  - name: exchange_rates
+    description: "Raw exchange rates data loaded from CSV containing daily currency conversion rates. Enables multi-currency transaction analysis by converting all amounts to PLN."
+    columns:
+    - name: date
+      description: "Date for which the exchange rate is valid, must be in YYYY-MM-DD format"
+      tests:
+        - not_null
+        - date_format:
+            arguments:
+              format: '%Y-%m-%d'
+    - name: currency_from
+      description: "Source currency for the exchange rate conversion, includes major world currencies"
+      tests:
+        - not_null
+        - accepted_values:
+            arguments:
+              values: ['USD', 'EUR', 'GBP', 'PLN', 'CAD', 'JPY', 'CHF']
+    - name: currency_to
+      description: "Target currency for conversion, currently set to PLN for unified reporting"
+      tests:
+        - not_null
+        - accepted_values:
+            arguments:
+              values: ['PLN']
+    - name: rate
+      description: "Exchange rate value for converting from source to target currency, must be positive"
+      tests:
+        - not_null
+        - not_negative

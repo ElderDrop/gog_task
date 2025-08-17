@@ -4,28 +4,10 @@
 ) }}
 
 SELECT 
-    t.transaction_id,
-    t.user_id,
-    t.game_id,
-    t.amount as original_amount,
-    t.currency as original_currency,
-    t.transaction_date,
-    t.payment_method,
-    t.product_type,
-    t.id as transaction_key,
-    p.psp_transaction_id,
-    p.original_transaction_id,
-    p.id as psp_transaction_key,
-    CASE 
-        WHEN t.transaction_id IS NOT NULL AND p.psp_transaction_id IS NOT NULL THEN 
-            {{ convert_currency('t.amount', 't.currency', 't.transaction_date') }}
-        WHEN t.transaction_id IS NOT NULL AND p.psp_transaction_id IS NULL THEN 
-            {{ convert_currency('t.amount', 't.currency', 't.transaction_date') }}
-        WHEN t.transaction_id IS NULL AND p.psp_transaction_id IS NOT NULL THEN 
-            {{ convert_currency('p.psp_amount', 'p.psp_currency', ' CAST(p.psp_timestamp AS DATE)') }}
-        ELSE NULL
-    END as converted_amount,
-    'PLN' as converted_currency,
+    t.id AS transaction_key,
+    p.id AS psp_transaction_key,
+    p.psp_transaction_id as source_psp_transaction_id,
+    p.original_transaction_id as source_original_transaction_id,
     CASE 
         WHEN t.transaction_id IS NOT NULL AND p.psp_transaction_id IS NOT NULL THEN 'MATCH'
         WHEN t.transaction_id IS NOT NULL AND p.psp_transaction_id IS NULL THEN 'ONLY IN GOG'
