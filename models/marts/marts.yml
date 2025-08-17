@@ -51,13 +51,3 @@ models:
         tests:
           - not_null
 
-  - name: fact_reconciled_transactions
-    description: "Fact table consolidating reconciled transactions from both internal and PSP systems. Provides a unified view of all transactions with conversion to PLN for financial reporting."
-    columns:
-      - name: reconciliation_status
-        description: "Status of the reconciliation between internal and PSP transactions"
-        tests:
-          - not_null
-          - accepted_values:
-              arguments:
-                values: ['MATCH', 'ONLY IN GOG', 'ONLY IN PSP']

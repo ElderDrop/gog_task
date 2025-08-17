@@ -37,4 +37,4 @@ The `analyses` folder contains SQL files and CSV results that provide valuable b
 
 ### 3. Data Reconciliation
 
-The reconciliation logic for `raw_transactions` vs. `psp_transactions` was integrated directly into the fact table layer. This strategic placement was made because the data is crucial for future analytical purposes, such as identifying game categories with **payment processing issues** or pinpointing problems with the integration system.
+The reconciliation logic for `raw_transactions` vs. `psp_transactions` was integrated directly into the fact table in audit schema. This strategic placement was made because the data is crucial for future analytical purposes, such as identifying game categories with **payment processing issues** or pinpointing problems with the integration system.

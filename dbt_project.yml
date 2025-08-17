@@ -32,4 +32,6 @@ models:
       +schema: staging
     marts:
       +schema: mart
+    audit:
+      +schema: audit
 
