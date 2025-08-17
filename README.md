@@ -3,6 +3,9 @@
 This document outlines the implementation of the GOG data pipeline, including the data model, cleaning procedures, and key analytical findings.
 
 ***
+### Assumptions
+
+- Future-dated transactions are present in the dataset and have been included in the analysis under the assumption that this data is accurate and intentional.
 
 ### 1. Data Model Design
 
